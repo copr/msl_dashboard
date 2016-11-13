@@ -19,5 +19,8 @@ from dashboard import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-	url(r'^index/', views.index)
+	url(r'^index/', views.index),
+	url(r'^result/', views.result),
+	url(r'^form/', views.get_name),
+	url(r'^dashboard/', views.send_data)
 ]

@@ -4,6 +4,8 @@
 </head>
 <body>
 Ahoj
-{{ results.kolo }}
-{{ result.tym }}
+
+{% for result in results %}
+	{{ result.tym }}
+{% endfor %}
 </body>

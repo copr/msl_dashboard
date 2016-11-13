@@ -1,0 +1,28 @@
+<head>
+<!-- Plotly.js -->
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        </head>
+        <body>
+        <!-- Plotly chart will be drawn inside this DIV -->
+        <div id="myDiv"></div>
+        <script>
+var data = {{ msl_data }};
+var x = [];
+for (var i = 0; i < 500; i ++) {
+    if (isNaN(data[i].fields.l))
+		{x[i]=0;}else
+		{x[i] = data[i].fields.l;}
+}
+
+var data2 = [
+  {
+    x: x,
+    type: 'histogram',
+      marker: {
+    color: 'rgba(100,250,100,0.7)',
+    },
+  }
+];
+Plotly.newPlot('myDiv', data2);
+        </script>
+        </body>
