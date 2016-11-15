@@ -15,9 +15,9 @@ module.exports = {
 	]
     },
     externals: {
-	// 'react': 'React',
-	// 'react-dom': 'ReactDOM',
-	//'d3': 'd3'
+	'react': 'React',
+	'react-dom': 'ReactDOM',
+	'plotly': 'Plotly',
     },
     resolve: {
 	extensions: ['', '.js', '.jsx']
