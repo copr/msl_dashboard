@@ -1,0 +1,17 @@
+.menu_item {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    background: gray;
+    padding: 5px 5px 5px 5px;
+}
+
+.menu_item:hover {
+    background: red;
+}
+
+.menu_item a {
+    width: 100%;
+    height: 100%;
+}
