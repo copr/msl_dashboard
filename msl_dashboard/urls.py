@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^api/teamsbyyear/(?P<year>\d+)/$', views.api_get_teams_by_year),
     url(r'^api/yearsbyteam/(?P<team>[\w ]+)/$', views.api_get_years_by_team),
     url(r'^api/yearsbyteam/(?P<team>[\w ]+)/$', views.api_get_years_by_team),
-    url(r'^api/races/(?P<team>[\w ]+)/(?P<year>\d+)/$',
+    url(r'^api/races/(?P<team>[\w ]+)/(?P<year>\d+)/(?P<category>\w+)/$',
         views.api_get_races_by_team_year),
     url(r'^app/$', views.app)
 ]

@@ -61,18 +61,21 @@
 
 	/** @jsx React.DOM *//* 
 	 * Class that keeps the information about account, And it  
-	 * changes the views based on other components.
+	 * changes views what's currently shown.
 	 */
 
 	var React = __webpack_require__(2);
 
 	var Menu = __webpack_require__(3);
 	var Mean = __webpack_require__(4);
+	var Races = __webpack_require__(514);
+
 	var SelectBox = __webpack_require__(511);
 	var SelectBoxMultiple = __webpack_require__(512);
 	var DataList = __webpack_require__(513);
 
 	module.exports = React.createClass({displayName: "module.exports",
+
 	    getInitialState: function() {
 		return {step: 0};
 	    },
@@ -81,30 +84,37 @@
 		this.setState({step: i});
 	    },
 
-	    menu_items: [[0, "Prumer"], [1, "Grafy"], [2, "Kecy"], [3, "Prdy"]],
+	    menu_items: [[2, "Prumer"], [1, "Grafy"], [0, "Závody"], [3, "Prdy"]],
 
 	    render: function() {
 		d = ["ahoj", "cau", "cest"]
 		switch(this.state.step) {
-		    case 0:
-			return (
-			    React.createElement("div", null, 
-				React.createElement(Menu, {changeState:  this.changeState, menu_items:  this.menu_items}), 
-				React.createElement(SelectBoxMultiple, {data:  ["ahoj", "cau", "cest"] }), ";"
-			    )
-			);
 		    case 1:
 			return (
 			    React.createElement("div", null, 
 				React.createElement(Menu, {changeState:  this.changeState, menu_items:  this.menu_items}), 
-				React.createElement(Mean, null), ";"
+				React.createElement(SelectBoxMultiple, {data:  ["ahoj", "cau", "cest"] })
+			    )
+			);
+		    case 2:
+			return (
+			    React.createElement("div", null, 
+				React.createElement(Menu, {changeState:  this.changeState, menu_items:  this.menu_items}), 
+				React.createElement(Mean, null)
+			    )
+			);
+		    case 0:
+			return (
+			    React.createElement("div", null, 
+				React.createElement(Menu, {changeState:  this.changeState, menu_items:  this.menu_items}), 
+				React.createElement(Races, null)
 			    )
 			);
 		    default:
 			return (
 			    React.createElement("div", null, 
 				React.createElement(Menu, {changeState:  this.changeState, menu_items:  this.menu_items}), 
-				React.createElement(Mean, null), ";"
+				React.createElement(Mean, null)
 			    )
 			);
 		}
@@ -65642,6 +65652,200 @@
 			React.createElement("input", {list: "data"}), 
 			React.createElement("datalist", {id: "data", onChange:  this.handleChange}, 
 			     options 
+			)
+		    )
+		);
+	    }
+	});
+
+
+/***/ },
+/* 514 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM *//*
+	 * Tohle bude zobrazovat vsechny zavody 
+	 */
+
+	var React = __webpack_require__(2);
+	var $ = __webpack_require__(5);
+
+	var SelectBox = __webpack_require__(511);
+	var SelectBoxMultiple = __webpack_require__(512);
+	var RacesTable = __webpack_require__(515);
+
+
+	module.exports = React.createClass({displayName: "module.exports",
+
+	    getInitialState: function() {
+		return {teams: [], years: [], selected_team: "", selected_year: "",
+			selected_category: "", data_to_show: []};
+	    },
+
+	    componentDidMount: function() {
+		this.getTeams();
+		this.getYears();
+	    },
+
+	    // geaty by mely byt asi jen nekde uplne na vrchu
+	    // cely ten komponent by mel jen zobrazovat data
+	    // ne je odnekud tahat
+	    getTeams: function() {
+		$.ajax({
+		    url: '/api/teams',
+		    dataType: 'json',
+		    cache: false,
+		    success: function(data) {
+			data.unshift("")
+			this.setState({teams: data});
+		    }.bind(this),
+		    error: function(xhr, status, err) {
+			console.log("Jsme v pici")
+		    }.bind(this)
+		});
+	    },
+
+	    getYears: function() {
+		$.ajax({
+		    url: '/api/years',
+		    dataType: 'json',
+		    cache: false,
+		    success: function(data) {
+			data.unshift("")
+			this.setState({years: data});
+		    }.bind(this),
+		    error: function(xhr, status, err) {
+			console.log("Jsme v pici")
+		    }.bind(this)
+		});
+	    },
+
+	    getRaces: function() {
+		/* if (this.state.selected_team === undefined || this.state.selected_year === undefined
+		   || this.state.selected_category === undefined) {
+		   console.log("neni vse");
+		   return;
+		   } */
+		var url = '/api/races/' + this.state.selected_team + '/' +
+			  this.state.selected_year + '/' + this.state.selected_category;
+		console.log(url);
+		$.ajax({
+		    url: url,
+		    dataType: 'json',
+		    cache: false,
+		    success: function(data) {
+			this.setState({data_to_show: data});
+		    }.bind(this),
+		    error: function(xhr, status, err) {
+			console.log("Jsme v pici")
+		    }.bind(this)
+		});
+	    },
+
+	    selectTeam: function(e) {
+		this.setState({selected_team: e.target.value});
+	    },
+
+	    selectYear: function(e) {
+		this.setState({selected_year: parseInt(e.target.value)});
+	    },
+
+	    selectCategory: function(e) {
+		this.setState({selected_category: e.target.value});
+	    },
+
+	    render: function() {
+		return (
+		    React.createElement("div", null, 
+			React.createElement("div", null, 
+			    React.createElement(SelectBox, {data:  this.state.teams, getValue:  this.selectTeam}), 
+			    React.createElement(SelectBox, {data:  this.state.years, getValue:  this.selectYear}), 
+			    React.createElement(SelectBox, {data:  ["", "Muži", "Ženy", "Veteráni"], getValue:  this.selectCategory}), 
+			    React.createElement("div", null,  this.state.selected_team), 
+			    React.createElement("div", null,  this.state.selected_year), 
+			    React.createElement("div", null,  this.state.selected_category), 
+			    React.createElement("button", {onClick:  this.getRaces}, "Jedem!")
+			), 
+			React.createElement("div", null, 
+			    React.createElement(RacesTable, {data:  this.state.data_to_show})
+			)
+		    )
+		);
+	    }
+	});
+
+
+/***/ },
+/* 515 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/** @jsx React.DOM *//*
+	 * Tohle zobrazi vsechny zavody v tabulce nebo seznamu spis 
+	 */
+
+	var React = __webpack_require__(2);
+	var math = __webpack_require__(6);
+
+	module.exports = React.createClass({displayName: "module.exports",
+	    getResult: function(r) {
+		if (r.fields.l === null || r.fields.r === null) {
+		    return null;
+		}
+		return (r.fields.l > r.fields.p) ? r.fields.l : r.fields.p;
+	    },
+
+	    removeNulls: function(data) {
+		return data.filter(function(x)  {return this.getResult(x) !== null;}.bind(this));
+	    },
+
+	    leftAverage: function(data) {
+		var d = data.map(function(x)  {return x.fields.l;}).filter(function(x)  {return x !== null;});
+		return math.sum(d)/d.length;
+	    },
+
+	    rightAverage: function(data) {
+		var d = data.map(function(x)  {return x.fields.p;}).filter(function(x)  {return x !== null;});
+		return math.sum(d)/d.length;
+	    },
+
+	    average: function(data) {
+		var d = data.map(function(x)  {return this.getResult(x);}.bind(this)).filter(function(x)  {return x !== null;});
+		return math.sum(d)/d.length;
+	    },
+	    
+	    render: function() {
+		console.log(this.props.data);
+		var data = this.props.data;
+		var rs = data.map(function(r) 
+		    {return React.createElement("tr", null, 
+			React.createElement("td", null,  r.fields.misto), 
+			React.createElement("td", null,  r.fields.kolo), 
+			React.createElement("td", null,  this.getResult(r)), 
+			React.createElement("td", null,  r.fields.l), 
+			React.createElement("td", null,  r.fields.p), 
+			React.createElement("td", null,  r.fields.body)
+		    );}.bind(this)
+		);
+		return (
+		    React.createElement("table", null, 
+			React.createElement("tbody", null, 
+			    React.createElement("tr", null, 
+				React.createElement("th", null, "Místo"), 
+				React.createElement("th", null, "Kolo"), 
+				React.createElement("th", null, "Výsledný čas"), 
+				React.createElement("th", null, "Levý Proud"), 
+				React.createElement("th", null, "Pravý Proud"), 
+				React.createElement("th", null, "Body")
+			    ), 
+			     rs, 
+			    React.createElement("tr", null, 
+				React.createElement("td", null, "Průměry"), 
+				React.createElement("th", null, "-"), 
+				React.createElement("th", null,  this.average(data)), 
+				React.createElement("th", null,  this.leftAverage(data)), 
+				React.createElement("th", null,  this.rightAverage(data)), 
+				React.createElement("th", null,  data.reduce(function(acc, cur)  {return acc + cur.fields.body;}, 0)/data.length)
+			    )
 			)
 		    )
 		);
