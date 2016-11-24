@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
+import json
 
 def index(request):
     return render(request, 'base.html', {})
@@ -29,10 +30,42 @@ def send_data(request):
     js_data = mark_safe(serializers.serialize("json",results))
     return render(request, "dash2.html", {"msl_data": js_data})
 
+def app(request):
+    return render(request, "react.html")
+
+## Api 
 def api_send_data(request):
     results = models.Msl.objects.all()
     js_data = serializers.serialize("json",results)
     return HttpResponse(js_data, content_type='application/json')
 
-def app(request):
-    return render(request, "react.html")
+# Serializers serializuji jen tridy co dedi z models.model, takze
+# na jednoduche typy pouzivam json.dumps
+def api_send_years(request):
+    years = list(models.Msl.objects.values_list('rok', flat=True).distinct())
+    js_data = json.dumps(years)
+    return HttpResponse(js_data, content_type='application/json')
+
+def api_send_teams(request):
+    teams = list(models.Msl.objects.values_list("tym", flat=True).distinct())
+    js_data = json.dumps(teams)
+    return HttpResponse(js_data, content_type='application/json')
+
+
+# nekonzistentni pojmenovavani send/get
+def api_get_teams_by_year(request, year):
+    teams = list(models.Msl.objects.filter(rok=year)
+                .values_list("tym", flat=True).distinct())
+    js_data = json.dumps(teams)
+    return HttpResponse(js_data, content_type='application/json')
+
+def api_get_years_by_team(request, team):
+    years = list(models.Msl.objects.filter(tym=team)
+                .values_list("rok", flat=True).distinct())
+    js_data = json.dumps(years)
+    return HttpResponse(js_data, content_type='application/json')
+
+def api_get_races_by_team_year(request, team, year):
+    races = models.Msl.objects.filter(tym=team, rok=year)
+    js_data = serializers.serialize("json", races)
+    return HttpResponse(js_data, content_type='application/json')
