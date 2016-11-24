@@ -7,7 +7,7 @@ var math = require('mathjs');
 
 module.exports = React.createClass({
     getResult: function(r) {
-	if (r.fields.l === null || r.fields.r === null) {
+	if (r.fields.l === null || r.fields.p === null) {
 	    return null;
 	}
 	return (r.fields.l > r.fields.p) ? r.fields.l : r.fields.p;
