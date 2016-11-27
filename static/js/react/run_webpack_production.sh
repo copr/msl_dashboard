@@ -1,0 +1,1 @@
+nodejs /home/copr/zdrojaky/msl_dashboard/static/js/react/node_modules/webpack/bin/webpack.js /home/copr/zdrojaky/msl_dashboard/static/js/react/webpack.config.js --progress --colors --watch --production

@@ -26,6 +26,8 @@ urlpatterns = [
     url(r'^api/data/$', views.api_send_data),
     url(r'^api/years/$', views.api_send_years),
     url(r'^api/teams/$', views.api_send_teams),
+    url(r'^api/places/$', views.api_send_places),
+    url(r'^api/filtr/$', views.api_filter),
     url(r'^api/teamsbyyear/(?P<year>\d+)/$', views.api_get_teams_by_year),
     url(r'^api/yearsbyteam/(?P<team>[\w ]+)/$', views.api_get_years_by_team),
     url(r'^api/yearsbyteam/(?P<team>[\w ]+)/$', views.api_get_years_by_team),

@@ -31,12 +31,19 @@ module.exports = React.createClass({
 	var d = data.map(x => this.getResult(x)).filter(x => x !== null);
 	return math.sum(d)/d.length;
     },
+
+    truncate: function(x, n) {
+	var numero = Math.pow(10, n)
+	return Math.trunc(x*numero)/numero;
+    },
     
     render: function() {
 	console.log(this.props.data);
 	var data = this.props.data;
 	var rs = data.map(r =>
 	    <tr>
+		<td>{ r.fields.tym }</td>
+		<td>{ r.fields.rok }</td>
 		<td>{ r.fields.misto }</td>
 		<td>{ r.fields.kolo }</td>
 		<td>{ this.getResult(r) }</td>
@@ -49,6 +56,8 @@ module.exports = React.createClass({
 	    <table>
 		<tbody>
 		    <tr>
+			<th>Tým</th>
+			<th>Rok</th>
 			<th>Místo</th>
 			<th>Kolo</th>
 			<th>Výsledný čas</th>
@@ -60,10 +69,12 @@ module.exports = React.createClass({
 		    <tr>
 			<td>Průměry</td>
 			<th>-</th>
-			<th>{ this.average(data) }</th>
-			<th>{ this.leftAverage(data) }</th>
-			<th>{ this.rightAverage(data) }</th>
-			<th>{ data.reduce((acc, cur) => acc + cur.fields.body, 0)/data.length }</th>
+			<th>-</th>
+			<th>-</th>
+			<th>{ this.truncate(this.average(data), 3) }</th>
+			<th>{ this.truncate(this.leftAverage(data), 3) }</th>
+			<th>{ this.truncate(this.rightAverage(data), 3) }</th>
+			<th>{ this.truncate(data.reduce((acc, cur) => acc + cur.fields.body, 0)/data.length, 3) }</th>
 		    </tr>
 		</tbody>
 	    </table>

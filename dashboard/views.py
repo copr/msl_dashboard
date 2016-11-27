@@ -52,8 +52,21 @@ def api_send_teams(request):
     js_data = json.dumps(teams)
     return HttpResponse(js_data, content_type='application/json')
 
+def api_send_places(request):
+    places = list(models.Msl.objects.values_list("misto", flat=True).distinct())
+    js_data = json.dumps(places)
+    return HttpResponse(js_data, content_type='application/json')
+
 
 # nekonzistentni pojmenovavani send/get
+def api_filter(request):
+    filt = dict(request.POST)
+    data = models.Msl.objects.filter(rok__in=filt['years[]'],
+                                    misto__in=filt['places[]'],
+                                    tym__in=filt['teams[]'])
+    js_data = serializers.serialize("json", data)
+    return HttpResponse(js_data, content_type='application/json')
+
 def api_get_teams_by_year(request, year):
     teams = sorted(list(models.Msl.objects.filter(rok=year)
                 .values_list("tym", flat=True).distinct()))

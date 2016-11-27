@@ -40,9 +40,39 @@ module.exports = React.createClass({
 	});
     },
 
+    getTeamsByYear: function(year) {
+	$.ajax({
+	    url: '/api/teamsbyyear/' + year,
+	    dataType: 'json',
+	    cache: false,
+	    success: function(data) {
+		data.unshift("")
+		this.setState({teams: data});
+	    }.bind(this),
+	    error: function(xhr, status, err) {
+		console.log("Jsme v pici")
+	    }.bind(this)
+	});
+    },
+
     getYears: function() {
 	$.ajax({
 	    url: '/api/years',
+	    dataType: 'json',
+	    cache: false,
+	    success: function(data) {
+		data.unshift("")
+		this.setState({years: data});
+	    }.bind(this),
+	    error: function(xhr, status, err) {
+		console.log("Jsme v pici")
+	    }.bind(this)
+	});
+    },
+
+    getYearsByTeam: function(team) {
+	$.ajax({
+	    url: '/api/yearsbyteam/' + team,
 	    dataType: 'json',
 	    cache: false,
 	    success: function(data) {
@@ -79,10 +109,16 @@ module.exports = React.createClass({
 
     selectTeam: function(e) {
 	this.setState({selected_team: e.target.value});
+	if (this.state.selected_year === "") {
+	    this.getYearsByTeam(e.target.value);
+	}
     },
 
     selectYear: function(e) {
 	this.setState({selected_year: parseInt(e.target.value)});
+	if (this.state.selected_team === "") {
+	    this.getTeamsByYear(e.target.value);
+	}
     },
 
     selectCategory: function(e) {
@@ -93,9 +129,12 @@ module.exports = React.createClass({
 	return (
 	    <div>
 		<div>
-		    <SelectBox data={ this.state.teams } getValue={ this.selectTeam } />
-		    <SelectBox data={ this.state.years } getValue={ this.selectYear } />
-		    <SelectBox data={ ["", "Muži", "Ženy", "Veteráni"] } getValue={ this.selectCategory } />
+		    <SelectBox data={ this.state.teams }
+			       getValue={ this.selectTeam } />
+		    <SelectBox data={ this.state.years }
+			       getValue={ this.selectYear } />
+		    <SelectBox data={ ["", "Muži", "Ženy", "Veteráni"] }
+			       getValue={ this.selectCategory } />
 		    <div>{ this.state.selected_team }</div>
 		    <div>{ this.state.selected_year }</div>
 		    <div>{ this.state.selected_category }</div>
